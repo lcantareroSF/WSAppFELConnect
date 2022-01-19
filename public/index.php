@@ -9,9 +9,8 @@ require __DIR__ . '/../appFunctions/functions.php';
 $app = AppFactory::create();
 $app->setBasePath("/Proyectos/WSAppFELConnect/public"); // /myapp/api is the api folder (http://domain/myapp/api)
 
-$app->get('/hello/{name}', function (Request $request, Response $response, array $args) {
-    $name = $args['name'];
-    $response->getBody()->write("Hello, $name");
+$app->get('/ping', function (Request $request, Response $response, array $args) {
+    $response->getBody()->write("Servicio en linea");
     return $response;
 });
 
