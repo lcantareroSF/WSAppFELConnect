@@ -33,9 +33,9 @@ function salesforceLogin($token_url, $params){
     }
 }
 
-function CertificaFact($url, $request) {
+function FELService($url, $request, $metodoHTTP) {
     $headers = [
-        'Method: POST',
+        'Method: ' . $metodoHTTP,
         'Connection: Keep-Alive',
         'User-Agent: PHP-SOAP-CURL',
         'Content-Type: text/xml'];
@@ -48,20 +48,21 @@ function CertificaFact($url, $request) {
         CURLOPT_FRESH_CONNECT => 1,
         CURLOPT_RETURNTRANSFER => 1,
         CURLOPT_FORBID_REUSE => 1,
-        CURLOPT_TIMEOUT => 4,
+        CURLOPT_TIMEOUT => 8,
         CURLOPT_POSTFIELDS => $request
     );
 
     $ch = curl_init();
     curl_setopt_array($ch, $defaults);
+    
     $resFinal = '';
     if( ! $result = curl_exec($ch))
     {
         $resFinal = trigger_error(curl_error($ch));
-        print("<br><br>Error de comunicacion con servicio de facturacion.<br> $resFinal");
+        print("\nError de comunicacion con servicio de facturacion.\n $resFinal");
     }else{   
         $resFinal = $result;
-        print("<br><br>Comunicacion con servicio de facturacion correcta.");
+        print("\n\nComunicacion con servicio de facturacion correcta.\n");
     }
 
     curl_close($ch);
@@ -116,4 +117,14 @@ function consultaRecord($id, $instance_url , $access_token){
 			curl_close($curl);
 			$response = json_decode($json_response, true);
         return $response['Reques_WS__c'];
+}
+
+
+function get_string_between($string, $start, $end){
+    $string = ' ' . $string;
+    $ini = strpos($string, $start);
+    if ($ini == 0) return '';
+    $ini += strlen($start);
+    $len = strpos($string, $end, $ini) - $ini;
+    return substr($string, $ini, $len);
 }

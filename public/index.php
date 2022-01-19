@@ -38,12 +38,75 @@ $app->get('/certificarFel', function (Request $request, Response $response, arra
             $reqFact = consultaRecord($data["id"], $respLogin["instance_url"], $respLogin["token"]);
             //$response->getBody()->write("\nRequest: " . $reqFact); 
 
-            $certificaResp = CertificaFact($data["endpoint"],$reqFact);
+            $certificaResp = FELService($data["endpoint"],$reqFact,$reqFact, 'POST');
             $response->getBody()->write("\nResponse: " . $certificaResp);
 
             if($certificaResp != ''){
                 ActualizaRegistro($data["id"], $certificaResp,$respLogin["instance_url"], $respLogin["token"]);
             }
+        }
+    }
+
+    return $response;
+});
+
+$app->get('/cancelarFel', function (Request $request, Response $response, array $args) {
+    $data = json_decode($request->getBody(),true);
+
+    if($data["id"] != '' && $data["endpoint"] != ''){
+
+        //=======================CONFIGURACION======================
+        $token_urlConf ="https://test.salesforce.com/services/oauth2/token";
+        $paramsConf =
+                    "grant_type=password"
+                    . "&client_id=3MVG9ysJNY7CaIHn0buJJ0rfsXKFNLv5NtNXl8Yz5exVSbT8VfdJ4ddMhwpncbu6dyjsDJvyH3pj32XVIfm2V"
+                    . "&client_secret=19C3E65304956C76A2354300277F447F2155D317D306C71719026EAE07CE3D73"
+                    . "&username=admin@pymes.com.sandboxmig"
+                    . "&password=s12345678";
+
+        $respLogin = salesforceLogin($token_urlConf,$paramsConf);
+
+        $response->getBody()->write("\nToken Salesforce: " . $respLogin["token"]);
+        if($respLogin["token"] != ''){
+            $reqFact = consultaRecord($data["id"], $respLogin["instance_url"], $respLogin["token"]);
+            //$response->getBody()->write("\nRequest: " . $reqFact); 
+
+            $certificaResp = FELService($data["endpoint"],$reqFact, 'POST');
+            $response->getBody()->write("\nResponse: " . $certificaResp);
+
+            if($certificaResp != ''){
+                ActualizaRegistro($data["id"], $certificaResp,$respLogin["instance_url"], $respLogin["token"]);
+            }
+        }
+    }
+
+    return $response;
+});
+
+$app->get('/imprimirFEL', function (Request $request, Response $response, array $args) {
+    $data = json_decode($request->getBody(),true);
+
+    if($data["id"] != '' && $data["endpoint"] != ''){
+
+        //=======================CONFIGURACION======================
+        $token_urlConf ="https://test.salesforce.com/services/oauth2/token";
+        $paramsConf =
+                    "grant_type=password"
+                    . "&client_id=3MVG9ysJNY7CaIHn0buJJ0rfsXKFNLv5NtNXl8Yz5exVSbT8VfdJ4ddMhwpncbu6dyjsDJvyH3pj32XVIfm2V"
+                    . "&client_secret=19C3E65304956C76A2354300277F447F2155D317D306C71719026EAE07CE3D73"
+                    . "&username=admin@pymes.com.sandboxmig"
+                    . "&password=s12345678";
+
+        $respLogin = salesforceLogin($token_urlConf,$paramsConf);
+
+        $response->getBody()->write("\nToken Salesforce: " . $respLogin["token"]);
+        if($respLogin["token"] != ''){
+            $reqFact = consultaRecord($data["id"], $respLogin["instance_url"], $respLogin["token"]);
+            //$response->getBody()->write("\nRequest: " . $reqFact); 
+
+            $certificaResp = FELService($data["endpoint"],$reqFact, 'POST');
+
+            $response->getBody()->write("\nResponse: " . $certificaResp);
         }
     }
 
